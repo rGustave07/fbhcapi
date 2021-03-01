@@ -1,0 +1,14 @@
+version: '3'
+services:
+  fbhcapi:
+    image: golang:1.16
+    volumes:
+      - .:/go/api
+    ports:
+      - "8080:8080"
+    expose:
+      - "8080"
+    stdin_open: true
+    tty: true
+    working_dir: /go/api
+    entrypoint: ./devdocker.entrypoint.sh
