@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/gorilla/mux"
+	"fbhc.com/api/main/routing"
 )
 
 // Player is a player
@@ -67,8 +67,15 @@ func addPlayer(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("%+v\n", playerData)
 }
 
-// InitializeEndpoints endpoints for this package
-func InitializeEndpoints(r *mux.Router) {
-	r.HandleFunc("/players", getAllPlayers).Methods("GET")
-	r.HandleFunc("/players", addPlayer).Methods("POST")
+// GetRoutes returns the route configs for
+func GetRoutes() []routing.Route {
+	playerRoutes := []routing.Route{
+		{
+			Path:    "/players",
+			Method:  "GET",
+			Handler: getAllPlayers,
+		},
+	}
+
+	return playerRoutes
 }
