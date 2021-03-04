@@ -1,11 +1,13 @@
 package players
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 
+	"fbhc.com/api/main/db"
 	"fbhc.com/api/main/routing"
 )
 
@@ -29,8 +31,7 @@ var players = []Player{
 	},
 }
 
-// UnmarshalJSON does Unmarshalling function for json to struct
-func UnmarshalJSON(incData []byte) Player {
+func unmarshalJSON(incData []byte) Player {
 	var data Player
 	if err := json.Unmarshal(incData, &data); err != nil {
 		panic(err)
@@ -40,40 +41,64 @@ func UnmarshalJSON(incData []byte) Player {
 }
 
 // GetPlayers returns all registered players
-func getAllPlayers(w http.ResponseWriter, r *http.Request) {
-	jsonMarshalledPlayers, err := json.Marshal(players)
-	fmt.Println("Route hit")
+func getAllPlayers(db *sql.DB) http.HandlerFunc {
 
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	// Middleware can go here
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		jsonMarshalledPlayers, err := json.Marshal(players)
+		fmt.Println("Route hit")
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(jsonMarshalledPlayers)
 	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(jsonMarshalledPlayers)
 }
 
-// AddPlayer adds player to roster
-func addPlayer(w http.ResponseWriter, r *http.Request) {
-	request, err := ioutil.ReadAll(r.Body)
+func addPlayer(db *sql.DB) http.HandlerFunc {
 
-	if err != nil {
-		panic(err)
+	// Middleware can go here
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		request, err := ioutil.ReadAll(r.Body)
+
+		if err != nil {
+			panic(err)
+		}
+
+		playerData := unmarshalJSON(request)
+		players = append(players, playerData)
+
+		fmt.Println("Player successfully added")
+		fmt.Printf("%+v\n", playerData)
 	}
-
-	playerData := UnmarshalJSON(request)
-	players = append(players, playerData)
-
-	fmt.Println("Player successfully added")
-	fmt.Printf("%+v\n", playerData)
 }
 
-// GetRoutes returns the route configs for
-func GetRoutes() []routing.Route {
+// GetRoutes returns the routes metainfo and controllers
+func GetRoutes(database *sql.DB) []routing.Route {
+
+	db.CreateTable(
+		database,
+		"player",
+		`"id" integer NOT NULL PRIMARY KEY AUTOINCREMENT`,
+		`"firstname" TEXT`,
+		`"lastname" TEXT`,
+		`"number" integer`,
+	)
+
 	playerRoutes := []routing.Route{
 		{
 			Path:    "/players",
 			Method:  "GET",
-			Handler: getAllPlayers,
+			Handler: getAllPlayers(database),
+		},
+		{
+			Path:    "/player/addPlayer",
+			Method:  "POST",
+			Handler: addPlayer(database),
 		},
 	}
 

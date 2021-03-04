@@ -6,8 +6,12 @@ import (
 	"log"
 	"net/http"
 
-	"fbhc.com/api/main/players"
 	"github.com/gorilla/mux"
+
+	"fbhc.com/api/main/db"
+	"fbhc.com/api/main/players"
+	"fbhc.com/api/main/referees"
+	"fbhc.com/api/main/routing"
 )
 
 // App is an instance of the server application
@@ -16,13 +20,23 @@ type App struct {
 	DB     *sql.DB
 }
 
-// Initialize upon app startup, this function should be called
-func (a *App) Initialize() *App {
-	a.Router = mux.NewRouter()
-
-	for _, route := range players.GetRoutes() {
+func (a *App) registerRoutes(r []routing.Route) {
+	for _, route := range r {
 		a.Router.HandleFunc(route.Path, route.Handler).Methods(route.Method)
 	}
+}
+
+// Initialize upon app startup, this function should be called
+func (a *App) Initialize() *App {
+	a.Router = mux.NewRouter().StrictSlash(false)
+	a.DB = db.DatabaseInitialization()
+
+	routes := append(
+		players.GetRoutes(a.DB),
+		referees.GetRoutes()...,
+	)
+
+	a.registerRoutes(routes)
 
 	return a
 }
@@ -30,5 +44,7 @@ func (a *App) Initialize() *App {
 // Run application
 func (a *App) Run(addr string) {
 	fmt.Println("Application is now being served on :8080")
+
+	defer a.DB.Close()
 	log.Fatal(http.ListenAndServe(addr, a.Router))
 }
