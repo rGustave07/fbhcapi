@@ -56,15 +56,15 @@ func insertPlayer(db *sql.DB, id int, firstname string, lastname string, number 
 	log.Println("Inserting Player")
 	insertPlayerQuery := `INSERT INTO player(id, firstname, lastname, number) VALUES (?, ?, ?, ?)`
 
-	statement, err := db.Prepare(insertPlayerQuery)
+	statement, statementErr := db.Prepare(insertPlayerQuery)
 
-	if err != nil {
-		log.Fatalln(err.Error())
+	if statementErr != nil {
+		log.Fatalln(statementErr.Error())
 	}
 
-	_, err = statement.Exec(id, firstname, lastname, number)
+	_, queryErr := statement.Exec(id, firstname, lastname, number)
 
-	if err != nil {
-		log.Fatalln(err.Error())
+	if queryErr != nil {
+		log.Fatalln(queryErr.Error())
 	}
 }

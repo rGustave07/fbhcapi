@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 
 	"fbhc.com/api/main/db"
@@ -71,6 +72,21 @@ func addPlayer(db *sql.DB) http.HandlerFunc {
 
 		playerData := unmarshalJSON(request)
 		players = append(players, playerData)
+
+		log.Println("Inserting Player")
+		insertPlayerQuery := `INSERT INTO player(firstname, lastname, number) VALUES (?, ?, ?)`
+
+		statement, statementErr := db.Prepare(insertPlayerQuery)
+
+		if statementErr != nil {
+			log.Fatalln(statementErr.Error())
+		}
+
+		_, queryErr := statement.Exec(playerData.FirstName, playerData.LastName, playerData.Number)
+
+		if queryErr != nil {
+			log.Fatalln(queryErr.Error())
+		}
 
 		fmt.Println("Player successfully added")
 		fmt.Printf("%+v\n", playerData)

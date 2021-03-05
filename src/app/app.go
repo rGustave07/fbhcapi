@@ -9,8 +9,8 @@ import (
 	"github.com/gorilla/mux"
 
 	"fbhc.com/api/main/db"
-	"fbhc.com/api/main/players"
-	"fbhc.com/api/main/referees"
+	"fbhc.com/api/main/models/players"
+	"fbhc.com/api/main/models/referees"
 	"fbhc.com/api/main/routing"
 )
 
@@ -45,6 +45,9 @@ func (a *App) Initialize() *App {
 func (a *App) Run(addr string) {
 	fmt.Println("Application is now being served on :8080")
 
-	defer a.DB.Close()
+	defer func() {
+		log.Fatal(a.DB.Close())
+	}()
+
 	log.Fatal(http.ListenAndServe(addr, a.Router))
 }
