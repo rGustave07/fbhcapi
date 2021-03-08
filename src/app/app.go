@@ -1,12 +1,12 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"gorm.io/gorm"
 
 	"fbhc.com/api/main/db"
 	"fbhc.com/api/main/routing"
@@ -16,7 +16,7 @@ import (
 // App is an instance of the server application
 type App struct {
 	Router *mux.Router
-	DB     *sql.DB
+	DB     *gorm.DB
 	routes []routing.Route
 }
 
@@ -45,10 +45,5 @@ func (a *App) Initialize() *App {
 // Run application
 func (a *App) Run(addr string) {
 	fmt.Println("Application is now being served on :8080")
-
-	defer func() {
-		log.Fatal(a.DB.Close())
-	}()
-
 	log.Fatal(http.ListenAndServe(addr, a.Router))
 }

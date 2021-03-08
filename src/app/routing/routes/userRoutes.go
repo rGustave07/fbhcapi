@@ -1,14 +1,13 @@
 package routes
 
 import (
-	"database/sql"
-
 	controller "fbhc.com/api/main/controllers"
 	"fbhc.com/api/main/routing"
+	"gorm.io/gorm"
 )
 
 // GetUserRoutes ...
-func GetUserRoutes(database *sql.DB) []routing.Route {
+func GetUserRoutes(database *gorm.DB) []routing.Route {
 
 	userRoutes := []routing.Route{
 		{
