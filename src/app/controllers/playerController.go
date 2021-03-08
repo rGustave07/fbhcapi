@@ -2,13 +2,22 @@ package controller
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 
 	model "fbhc.com/api/main/models/player"
 	"gorm.io/gorm"
 )
+
+func marshalJSONMultiplePlayers(players []model.Player) []byte {
+	jsonReady, err := json.Marshal(players)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return jsonReady
+}
 
 func unmarshalJSON(incData []byte) *model.Player {
 	var data *model.Player
@@ -26,17 +35,13 @@ func GetAllPlayers(db *gorm.DB) http.HandlerFunc {
 	// Middleware can go here
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		// refactor to use database
-		// jsonMarshalledPlayers, err := json.Marshal(players)
-		// fmt.Println("Route hit")
+		var p model.Player
 
-		// if err != nil {
-		// 	http.Error(w, err.Error(), http.StatusInternalServerError)
-		// }
+		dbPlayers := p.GetAllPlayers(db)
+		allPlayers := marshalJSONMultiplePlayers(dbPlayers)
 
-		// w.Header().Set("Content-Type", "application/json")
-		// w.Write(jsonMarshalledPlayers)
-		fmt.Println("getAllPlayers controller")
+		w.WriteHeader(http.StatusOK)
+		w.Write(allPlayers)
 	}
 }
 
