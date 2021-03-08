@@ -10,7 +10,12 @@ After you've been placed into the container, navigate to src/app/ and use `go ge
 
 
 ## Usage
-Not too many endpoints exist on this API as I'm just starting it, however this will change soon.
+Not too many endpoints exist on this API as I'm just starting it, however this will change soon. If you have your own MySQL variables for db connection they will automatically be taken from OS environment if you use the following convention
+
+DB_USER=<your db username>
+DB_PASS=<your db password>
+DB_CONNSTRING=<your database url>
+DB_CONN_OPTIONALS=<any query params> eg: /query?param=blah *You don't need the slash*
 
 
 
