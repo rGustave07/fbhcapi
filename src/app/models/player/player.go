@@ -25,3 +25,20 @@ func (player *Player) InsertPlayer(db *gorm.DB) {
 	resultantString := fmt.Sprintf("Rows Affected: %v", insertionResult.RowsAffected)
 	fmt.Println(resultantString)
 }
+
+// GetAllPlayers ...
+func (player *Player) GetAllPlayers(db *gorm.DB) []Player {
+	var playerResults []Player
+
+	result := db.Find(&playerResults)
+
+	if result.Error != nil {
+		panic(result.Error)
+	}
+
+	for _, player := range playerResults {
+		fmt.Printf("%+v\n", player)
+	}
+
+	return playerResults
+}
