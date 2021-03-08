@@ -1,16 +1,18 @@
 package controller
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 
 	model "fbhc.com/api/main/models/player"
+	"gorm.io/gorm"
 )
 
-func unmarshalJSON(incData []byte) model.Player {
-	var data model.Player
+func unmarshalJSON(incData []byte) *model.Player {
+	var data *model.Player
+
 	if err := json.Unmarshal(incData, &data); err != nil {
 		panic(err)
 	}
@@ -19,7 +21,7 @@ func unmarshalJSON(incData []byte) model.Player {
 }
 
 // GetAllPlayers returns all registered players
-func GetAllPlayers(db *sql.DB) http.HandlerFunc {
+func GetAllPlayers(db *gorm.DB) http.HandlerFunc {
 
 	// Middleware can go here
 
@@ -39,38 +41,18 @@ func GetAllPlayers(db *sql.DB) http.HandlerFunc {
 }
 
 // AddPlayer adds a player
-func AddPlayer(db *sql.DB) http.HandlerFunc {
+func AddPlayer(db *gorm.DB) http.HandlerFunc {
 
-	// Middleware can go here
+	// SPECIFIC Middleware can go here
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		// Refactor to use database
-		// request, err := ioutil.ReadAll(r.Body)
+		request, err := ioutil.ReadAll(r.Body)
 
-		// if err != nil {
-		// 	panic(err)
-		// }
+		if err != nil {
+			panic(err)
+		}
 
-		// playerData := unmarshalJSON(request)
-		// players = append(players, playerData)
-
-		// log.Println("Inserting Player")
-		// insertPlayerQuery := `INSERT INTO player(firstname, lastname, number) VALUES (?, ?, ?)`
-
-		// statement, statementErr := db.Prepare(insertPlayerQuery)
-
-		// if statementErr != nil {
-		// 	log.Fatalln(statementErr.Error())
-		// }
-
-		// _, queryErr := statement.Exec(playerData.FirstName, playerData.LastName, playerData.Number)
-
-		// if queryErr != nil {
-		// 	log.Fatalln(queryErr.Error())
-		// }
-
-		// fmt.Println("Player successfully added")
-		// fmt.Printf("%+v\n", playerData)
-		fmt.Println("AddPlayer controller")
+		playerData := unmarshalJSON(request)
+		playerData.InsertPlayer(db)
 	}
 }

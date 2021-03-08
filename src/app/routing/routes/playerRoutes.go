@@ -1,23 +1,13 @@
 package routes
 
 import (
-	"database/sql"
-
 	controller "fbhc.com/api/main/controllers"
-	"fbhc.com/api/main/db"
 	"fbhc.com/api/main/routing"
+	"gorm.io/gorm"
 )
 
 // GetPlayerRoutes ...
-func GetPlayerRoutes(database *sql.DB) []routing.Route {
-	db.CreateTable(
-		database,
-		"player",
-		`"id" integer NOT NULL PRIMARY KEY AUTOINCREMENT`,
-		`"firstname" TEXT`,
-		`"lastname" TEXT`,
-		`"number" integer`,
-	)
+func GetPlayerRoutes(database *gorm.DB) []routing.Route {
 
 	playerRoutes := []routing.Route{
 		{

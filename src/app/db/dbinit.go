@@ -1,70 +1,57 @@
 package db
 
 import (
-	"database/sql"
 	"fmt"
 	"log"
 	"os"
+
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 // DatabaseInitialization initializes the database
-func DatabaseInitialization() (db *sql.DB) {
-	os.Remove("sqlite-database.db")
-	log.Println("Creating sqlite-database.db")
+func DatabaseInitialization() (db *gorm.DB) {
+	builtConnString := fmt.Sprintf(
+		"%s:%s@tcp(%s)/%s",
+		os.Getenv("DB_USER"),
+		os.Getenv("DB_PASS"),
+		os.Getenv("DB_CONNSTRING"),
+		os.Getenv("DB_CONN_OPTIONALS"),
+	)
 
-	file, err := os.Create("sqlite-database.db")
+	db, err := gorm.Open(mysql.Open(builtConnString), &gorm.Config{})
 
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	file.Close()
 
-	log.Println("sqlite database created")
-
-	sqliteDatabase, _ := sql.Open("sqlite3", "./sqlite-database.db")
-	return sqliteDatabase
+	return db
 }
 
 // CreateTable Creates table in Sqlite Sig (db *sql.DB, tableName string, fieldInfo ...string)
-func CreateTable(db *sql.DB, tableName string, fieldInfo ...string) {
-	var fieldCreationString string = ""
+func CreateTable(db *gorm.DB, tableName string, fieldInfo ...string) {
+	// TODO: Rework this using GORM
+	// var fieldCreationString string = ""
 
-	for idx, field := range fieldInfo {
-		if idx != len(fieldInfo)-1 {
-			fieldCreationString = fieldCreationString + field + ", "
-		} else {
-			fieldCreationString = fieldCreationString + field
-		}
-	}
+	// for idx, field := range fieldInfo {
+	// 	if idx != len(fieldInfo)-1 {
+	// 		fieldCreationString = fieldCreationString + field + ", "
+	// 	} else {
+	// 		fieldCreationString = fieldCreationString + field
+	// 	}
+	// }
 
-	var creationString string = fmt.Sprintf(`
-		CREATE TABLE %s (%s)
-	`, tableName, fieldCreationString)
+	// var creationString string = fmt.Sprintf(`
+	// 	CREATE TABLE %s (%s)
+	// `, tableName, fieldCreationString)
 
-	log.Println("Creating player table")
+	// log.Println("Creating player table")
 
-	statement, err := db.Prepare(creationString)
-	if err != nil {
-		log.Fatal(err.Error())
-	}
+	// statement, err := db.Prepare(creationString)
+	// if err != nil {
+	// 	log.Fatal(err.Error())
+	// }
 
-	statement.Exec()
-	log.Println("player table created!")
-}
-
-func insertPlayer(db *sql.DB, id int, firstname string, lastname string, number int) {
-	log.Println("Inserting Player")
-	insertPlayerQuery := `INSERT INTO player(id, firstname, lastname, number) VALUES (?, ?, ?, ?)`
-
-	statement, statementErr := db.Prepare(insertPlayerQuery)
-
-	if statementErr != nil {
-		log.Fatalln(statementErr.Error())
-	}
-
-	_, queryErr := statement.Exec(id, firstname, lastname, number)
-
-	if queryErr != nil {
-		log.Fatalln(queryErr.Error())
-	}
+	// statement.Exec()
+	// log.Println("player table created!")
 }

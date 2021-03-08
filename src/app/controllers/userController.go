@@ -1,13 +1,14 @@
 package controller
 
 import (
-	"database/sql"
 	"fmt"
 	"net/http"
+
+	"gorm.io/gorm"
 )
 
 // AddNewUser does stuff
-func AddNewUser(db *sql.DB) http.HandlerFunc {
+func AddNewUser(db *gorm.DB) http.HandlerFunc {
 	// Maybe middleware here?
 	return func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("userController activated")
@@ -15,7 +16,7 @@ func AddNewUser(db *sql.DB) http.HandlerFunc {
 }
 
 // GetUsers ...
-func GetUsers(db *sql.DB) http.HandlerFunc {
+func GetUsers(db *gorm.DB) http.HandlerFunc {
 	// Maybe middleware here?
 	return func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("userController activated")

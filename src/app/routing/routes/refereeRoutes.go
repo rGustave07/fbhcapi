@@ -1,14 +1,13 @@
 package routes
 
 import (
-	"database/sql"
-
 	controller "fbhc.com/api/main/controllers"
 	"fbhc.com/api/main/routing"
+	"gorm.io/gorm"
 )
 
 // GetRefereeRoutes ...
-func GetRefereeRoutes(database *sql.DB) []routing.Route {
+func GetRefereeRoutes(database *gorm.DB) []routing.Route {
 	// Create a table that's needed for the data
 
 	refereeRoutes := []routing.Route{

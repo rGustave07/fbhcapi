@@ -8,6 +8,8 @@ services:
       - "8080:8080"
     expose:
       - "8080"
+    env_file:
+      - ./config.env
     stdin_open: true
     tty: true
     working_dir: /go/api
