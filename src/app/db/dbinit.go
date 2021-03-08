@@ -2,12 +2,13 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"os"
 )
 
 // DatabaseInitialization initializes the database
-func DatabaseInitialization() {
+func DatabaseInitialization() (db *sql.DB) {
 	os.Remove("sqlite-database.db")
 	log.Println("Creating sqlite-database.db")
 
@@ -21,27 +22,28 @@ func DatabaseInitialization() {
 	log.Println("sqlite database created")
 
 	sqliteDatabase, _ := sql.Open("sqlite3", "./sqlite-database.db")
-	defer sqliteDatabase.Close()
-
-	createTable(sqliteDatabase)
-
-	// Test Insertion
-	insertPlayer(sqliteDatabase, 1, "Michael", "Franco", 13)
-	insertPlayer(sqliteDatabase, 2, "Jordan", "Schmidt", 31)
-	insertPlayer(sqliteDatabase, 3, "Troy", "Thompson", 28)
+	return sqliteDatabase
 }
 
-func createTable(db *sql.DB) {
-	createSeededPlayers := `CREATE TABLE player (
-		"id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
-		"firstname" TEXT,
-		"lastname" TEXT,
-		"number" integer
-	)`
+// CreateTable Creates table in Sqlite Sig (db *sql.DB, tableName string, fieldInfo ...string)
+func CreateTable(db *sql.DB, tableName string, fieldInfo ...string) {
+	var fieldCreationString string = ""
+
+	for idx, field := range fieldInfo {
+		if idx != len(fieldInfo)-1 {
+			fieldCreationString = fieldCreationString + field + ", "
+		} else {
+			fieldCreationString = fieldCreationString + field
+		}
+	}
+
+	var creationString string = fmt.Sprintf(`
+		CREATE TABLE %s (%s)
+	`, tableName, fieldCreationString)
 
 	log.Println("Creating player table")
 
-	statement, err := db.Prepare(createSeededPlayers)
+	statement, err := db.Prepare(creationString)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -54,15 +56,15 @@ func insertPlayer(db *sql.DB, id int, firstname string, lastname string, number 
 	log.Println("Inserting Player")
 	insertPlayerQuery := `INSERT INTO player(id, firstname, lastname, number) VALUES (?, ?, ?, ?)`
 
-	statement, err := db.Prepare(insertPlayerQuery)
+	statement, statementErr := db.Prepare(insertPlayerQuery)
 
-	if err != nil {
-		log.Fatalln(err.Error())
+	if statementErr != nil {
+		log.Fatalln(statementErr.Error())
 	}
 
-	_, err = statement.Exec(id, firstname, lastname, number)
+	_, queryErr := statement.Exec(id, firstname, lastname, number)
 
-	if err != nil {
-		log.Fatalln(err.Error())
+	if queryErr != nil {
+		log.Fatalln(queryErr.Error())
 	}
 }

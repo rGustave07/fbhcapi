@@ -1,26 +1,24 @@
 package routing
 
 import (
-	"fmt"
-	"html"
 	"net/http"
-
-	"fbhc.com/api/main/routing/players"
-	"github.com/gorilla/mux"
 )
 
-// InitializeRoutes is where routes are registered with their event handler
-func InitializeRoutes() *mux.Router {
-	fmt.Println("Initializing Routes")
-
-	r := mux.NewRouter()
-
-	r.HandleFunc("/", index)
-
-	players.InitializeEndpoints(r)
-	return r
+// Route contains information on a specific route
+type Route struct {
+	Path   string
+	Method string
+	// A function that returns a function to handle the http request
+	Handler http.HandlerFunc
 }
 
-func index(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello %q", html.EscapeString(r.URL.Path))
+// RouteCombiner will take a slice of routes and flatten them
+func RouteCombiner(routes ...[]Route) []Route {
+	var flattenedRoutes []Route
+
+	for _, routeSlice := range routes {
+		flattenedRoutes = append(flattenedRoutes, routeSlice...)
+	}
+
+	return flattenedRoutes
 }
