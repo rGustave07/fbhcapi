@@ -9,15 +9,15 @@ import (
 	"github.com/gorilla/mux"
 
 	"fbhc.com/api/main/db"
-	"fbhc.com/api/main/models/players"
-	"fbhc.com/api/main/models/referees"
 	"fbhc.com/api/main/routing"
+	"fbhc.com/api/main/routing/routes"
 )
 
 // App is an instance of the server application
 type App struct {
 	Router *mux.Router
 	DB     *sql.DB
+	routes []routing.Route
 }
 
 func (a *App) registerRoutes(r []routing.Route) {
@@ -31,9 +31,10 @@ func (a *App) Initialize() *App {
 	a.Router = mux.NewRouter().StrictSlash(false)
 	a.DB = db.DatabaseInitialization()
 
-	routes := append(
-		players.GetRoutes(a.DB),
-		referees.GetRoutes()...,
+	routes := routing.RouteCombiner(
+		routes.GetPlayerRoutes(a.DB),
+		routes.GetUserRoutes(a.DB),
+		routes.GetRefereeRoutes(a.DB),
 	)
 
 	a.registerRoutes(routes)
