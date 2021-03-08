@@ -1,5 +1,7 @@
 # Frozen Boars Hockey Club API
-![Boars Logo](https://i.imgur.com/NXvdSJN.png "FBHC")
+<p align="center">
+  <img src="https://i.imgur.com/NXvdSJN.png">
+</p>
 
 ## Installation
 This API is in early development, and it's pretty much closed source so if you can see this then you've probably been given the link. If you're technically inclined and curious you can install docker and run `docker-compose run --service-ports fbhcapi` and be put into the shell of the container provided.
