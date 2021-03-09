@@ -1,4 +1,4 @@
-package referees
+package model
 
 // Perhaps make a referee controller that contains a route struct
 
