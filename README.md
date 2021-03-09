@@ -10,9 +10,14 @@ After you've been placed into the container, navigate to src/app/ and use `go ge
 
 
 ## Usage
-Not too many endpoints exist on this API as I'm just starting it, however this will change soon.
+Not too many endpoints exist on this API as I'm just starting it, however this will change soon. If you have your own MySQL variables for db connection they will automatically be taken from OS environment if you use the following convention
 
-
+| Variable | Variable Entry | Example |
+|----------|----------------|---------|
+| DB_USER  | your username  | DB_USER=username |
+| DB_PASS  | your password  | DB_PASS=secret |
+| DB_CONNSTRING | your database url| DB_CONNSTRING=host.service.whatever|
+| DB_CONN_OPTIONALS | any query params | /query?param=blah *You don't need the slash* |
 
 ## Features to be added / planned
 - Registration for normal users and players that belong to the club
