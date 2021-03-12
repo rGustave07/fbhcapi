@@ -1,4 +1,5 @@
 **/*.db
-**/*.mod
-**/*.sum
+# **/*.mod
+# **/*.sum
 **/*.env
+.env.dev
