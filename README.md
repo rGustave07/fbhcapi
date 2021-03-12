@@ -4,9 +4,7 @@
 </p>
 
 ## Installation
-This API is in early development, and it's pretty much closed source so if you can see this then you've probably been given the link. If you're technically inclined and curious you can install docker and run `docker-compose run --service-ports fbhcapi` and be put into the shell of the container provided.
-
-After you've been placed into the container, navigate to src/app/ and use `go get` to fetch dependencies.
+This API is in early development, and it's pretty much closed source so if you can see this then you've probably been given the link. If you're technically inclined and curious you can install docker and run `docker-compose up` and the api should be listening on port 8080.
 
 
 ## Usage
