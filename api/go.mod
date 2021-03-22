@@ -1,4 +1,4 @@
-module github.com/rGustave07/fbhcapi
+module github.com/rGustave07/fbhcapi/api
 
 go 1.16
 

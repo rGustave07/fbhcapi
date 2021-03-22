@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
-	"github.com/rGustave07/fbhcapi/model"
+	"github.com/rGustave07/fbhcapi/api/model"
 )
 
 // Handler struct holds required services for the Handler to function
@@ -38,12 +38,6 @@ func NewHandler(c *Config) {
 	userGroupRoutes.POST("/signin", h.Signin)
 	userGroupRoutes.POST("/signout", h.Signout)
 	userGroupRoutes.POST("/tokens", h.Tokens)
-}
-
-func (h *Handler) Signup(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"Handler": "Signup",
-	})
 }
 
 func (h *Handler) Signin(c *gin.Context) {

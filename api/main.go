@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/rGustave07/fbhcapi/handler"
+	"github.com/rGustave07/fbhcapi/api/handler"
 )
 
 func main() {

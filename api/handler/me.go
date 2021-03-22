@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/rGustave07/fbhcapi/model"
-	"github.com/rGustave07/fbhcapi/model/apperrors"
+	"github.com/rGustave07/fbhcapi/api/model"
+	"github.com/rGustave07/fbhcapi/api/model/apperrors"
 )
 
 // Me handler(controller) calls services for getting user details
@@ -35,6 +35,7 @@ func (h *Handler) Me(c *gin.Context) {
 		c.JSON(e.Status(), gin.H{
 			"error": e,
 		})
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
