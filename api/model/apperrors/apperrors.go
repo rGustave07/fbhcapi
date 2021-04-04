@@ -1,4 +1,4 @@
-package model
+package apperrors
 
 import (
 	"errors"
@@ -112,7 +112,7 @@ func NewNotFoundErr(name string, value string) *Error {
 }
 
 // NewPayloadTooLargeErr creates payload too large error
-func NewNotFound(maxBodySize int64, contentLength int64) *Error {
+func NewPayloadTooLargeErr(maxBodySize int64, contentLength int64) *Error {
 	return &Error{
 		Type:    PayloadTooLarge,
 		Message: fmt.Sprintf("Max payload size of %v exceeded. payload: %v", maxBodySize, contentLength),
