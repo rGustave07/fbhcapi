@@ -2,6 +2,7 @@ package handler
 
 import (
 	"log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rGustave07/fbhcapi/api/model"
@@ -40,4 +41,21 @@ func (h *Handler) Signup(c *gin.Context) {
 		return
 	}
 
+	// Create token pair as strings
+	tokens, err := h.TokenService.NewPairFromUser(c, u, "")
+
+	if err != nil {
+		log.Printf("Failed to create tokens for user: %v\n", err.Error())
+
+		// TODO: If tokens are failed to create, reverse creation of user
+
+		c.JSON(apperrors.Status(err), gin.H{
+			"error": err,
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{
+		"tokens": tokens,
+	})
 }
