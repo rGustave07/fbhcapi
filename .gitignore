@@ -3,3 +3,4 @@
 # **/*.sum
 **/*.env
 .env.dev
+*.pem
